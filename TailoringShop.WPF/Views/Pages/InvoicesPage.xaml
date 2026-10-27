@@ -1,0 +1,367 @@
+<UserControl x:Class="TailoringShop.WPF.Views.Pages.InvoicesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:TailoringShop.WPF.Views.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1200">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Stats Cards -->
+        <UniformGrid Grid.Row="0" Rows="1" Margin="0,0,0,20">
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,15,0">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="إجمالي الفواتير" Style="{StaticResource CardTitle}"/>
+                        <TextBlock Text="{Binding TotalInvoices}" Style="{StaticResource StatValue}"
+                                   Foreground="{StaticResource PrimaryBrush}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="🧾" FontSize="40" Opacity="0.1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,15,0">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="فواتير البيع" Style="{StaticResource CardTitle}"/>
+                        <TextBlock Text="{Binding SalesInvoices}" Style="{StaticResource StatValue}"
+                                   Foreground="{StaticResource SuccessBrush}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="📈" FontSize="40" Opacity="0.1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,15,0">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="فواتير الشراء" Style="{StaticResource CardTitle}"/>
+                        <TextBlock Text="{Binding PurchaseInvoices}" Style="{StaticResource StatValue}"
+                                   Foreground="{StaticResource InfoBrush}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="📉" FontSize="40" Opacity="0.1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource DashboardCard}" Background="{StaticResource PrimaryGradientBrush}"
+                    Cursor="Hand" MouseLeftButtonUp="AddInvoice_Click">
+                <Grid>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="➕" FontSize="32" HorizontalAlignment="Center" Foreground="White"/>
+                        <TextBlock Text="فاتورة بيع جديدة" FontSize="14" FontWeight="SemiBold" Foreground="White"
+                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </UniformGrid>
+
+        <!-- Search and Filters -->
+        <Border Grid.Row="1" Style="{StaticResource DashboardCard}" Margin="0,0,0,20" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="{StaticResource BackgroundBrush}" CornerRadius="8"
+                        Padding="12,8" MaxWidth="400" HorizontalAlignment="Left">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="🔍" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" Opacity="0.5"/>
+                        <TextBox Grid.Column="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent" BorderThickness="0" FontSize="14" VerticalAlignment="Center" Width="280"/>
+                        <TextBlock Grid.Column="1" Text="بحث برقم الفاتورة أو اسم العميل..." FontSize="14"
+                                   Foreground="{StaticResource TextLightBrush}" VerticalAlignment="Center" IsHitTestVisible="False"
+                                   Visibility="{Binding SearchText, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=inverse}"/>
+                    </Grid>
+                </Border>
+
+                <ComboBox Grid.Column="1" ItemsSource="{Binding PaymentStatusList}" SelectedItem="{Binding SelectedPaymentStatus}"
+                          Width="180" Margin="15,0"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button Style="{StaticResource SecondaryButton}" Content="🔄 تحديث" Margin="0,0,10,0" Command="{Binding RefreshCommand}"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="➕ فاتورة جديدة" Padding="20,10" Command="{Binding AddInvoiceCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid -->
+        <Border Grid.Row="2" Style="{StaticResource DashboardCard}" Padding="0">
+            <Grid>
+                <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="جاري التحميل..." FontSize="16" Foreground="{StaticResource TextSecondaryBrush}"/>
+                </StackPanel>
+
+                <DataGrid x:Name="InvoicesDataGrid"
+                          ItemsSource="{Binding Invoices}"
+                          SelectedItem="{Binding SelectedInvoice}"
+                          Style="{StaticResource ModernDataGrid}"
+                          RowStyle="{StaticResource ModernDataGridRow}"
+                          CellStyle="{StaticResource ModernDataGridCell}"
+                          ColumnHeaderStyle="{StaticResource ModernDataGridColumnHeader}"
+                          Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=inverse}"
+                          RowDetailsVisibilityMode="VisibleWhenSelected"
+                          MouseDoubleClick="DataGrid_MouseDoubleClick"
+                          PreviewMouseLeftButtonDown="DataGrid_PreviewMouseLeftButtonDown">
+                    
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource AnimatedRowDetails}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- معلومات الفاتورة -->
+                                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource DetailCard}">
+                                        <StackPanel>
+                                            <TextBlock Text="🧾 معلومات الفاتورة" Style="{StaticResource DetailSectionHeader}"/>
+                                            <TextBlock Text="رقم الفاتورة" Style="{StaticResource DetailLabel}"/>
+                                            <TextBlock Text="{Binding InvoiceNumber}" Style="{StaticResource DetailValue}" 
+                                                       Foreground="{StaticResource PrimaryBrush}"/>
+                                            <TextBlock Text="النوع" Style="{StaticResource DetailLabel}" Margin="0,10,0,4"/>
+                                            <Border CornerRadius="12" Padding="10,4" HorizontalAlignment="Right"
+                                                    Background="{Binding Type, Converter={StaticResource InvoiceTypeToBackgroundConverter}}">
+                                                <TextBlock Text="{Binding Type, Converter={StaticResource InvoiceTypeToTextConverter}}"
+                                                           Foreground="{Binding Type, Converter={StaticResource InvoiceTypeToForegroundConverter}}"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                            <TextBlock Text="العميل/المورد" Style="{StaticResource DetailLabel}" Margin="0,10,0,4"/>
+                                            <TextBlock Text="{Binding Customer.FullName, TargetNullValue='-'}" Style="{StaticResource DetailValue}"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- المبالغ -->
+                                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource DetailCard}">
+                                        <StackPanel>
+                                            <TextBlock Text="💰 المبالغ" Style="{StaticResource DetailSectionHeader}"/>
+                                            <TextBlock Text="المجموع الفرعي" Style="{StaticResource DetailLabel}"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Subtotal, StringFormat=N0}" Style="{StaticResource DetailValue}"/>
+                                                <TextBlock Text=" د.ع" Foreground="{StaticResource TextLightBrush}" VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+                                            </StackPanel>
+                                            <TextBlock Text="الخصم" Style="{StaticResource DetailLabel}" Margin="0,10,0,4"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding DiscountAmount, StringFormat=N0}" 
+                                                           Style="{StaticResource DetailValue}" Foreground="{StaticResource DangerBrush}"/>
+                                                <TextBlock Text=" د.ع" Foreground="{StaticResource TextLightBrush}" VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+                                            </StackPanel>
+                                            <TextBlock Text="الإجمالي" Style="{StaticResource DetailLabel}" Margin="0,10,0,4"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Total, StringFormat=N0}" Style="{StaticResource DetailValueCurrency}" FontSize="18"/>
+                                                <TextBlock Text=" د.ع" Foreground="{StaticResource TextLightBrush}" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- الدفع والحالة -->
+                                    <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource DetailCard}" Margin="0">
+                                        <StackPanel>
+                                            <TextBlock Text="💳 الدفع" Style="{StaticResource DetailSectionHeader}"/>
+                                            <TextBlock Text="المدفوع" Style="{StaticResource DetailLabel}"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding PaidAmount, StringFormat=N0}" Style="{StaticResource DetailValueCurrency}"/>
+                                                <TextBlock Text=" د.ع" Foreground="{StaticResource TextLightBrush}" VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+                                            </StackPanel>
+                                            <TextBlock Text="المتبقي" Style="{StaticResource DetailLabel}" Margin="0,10,0,4"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding RemainingAmount, StringFormat=N0}" 
+                                                           Style="{StaticResource DetailValue}" Foreground="{StaticResource DangerBrush}"/>
+                                                <TextBlock Text=" د.ع" Foreground="{StaticResource TextLightBrush}" VerticalAlignment="Bottom" Margin="0,0,0,1"/>
+                                            </StackPanel>
+                                            <TextBlock Text="حالة الدفع" Style="{StaticResource DetailLabel}" Margin="0,10,0,4"/>
+                                            <Border CornerRadius="12" Padding="10,4" HorizontalAlignment="Right"
+                                                    Background="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToBackgroundConverter}}">
+                                                <TextBlock Text="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToTextConverter}}"
+                                                           Foreground="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToForegroundConverter}}"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- قائمة المنتجات -->
+                                    <Border Grid.Row="1" Grid.ColumnSpan="3" Background="White" CornerRadius="8" 
+                                            Padding="15" Margin="0,10,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="📦 المنتجات" Style="{StaticResource DetailSectionHeader}"/>
+                                            <DataGrid ItemsSource="{Binding Items}" 
+                                                      Style="{StaticResource NestedDataGrid}"
+                                                      ColumnHeaderStyle="{StaticResource NestedDataGridColumnHeader}"
+                                                      CellStyle="{StaticResource NestedDataGridCell}"
+                                                      AutoGenerateColumns="False" IsReadOnly="True">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="المنتج" Binding="{Binding Product.Name}" Width="*" MinWidth="180">
+                                                        <DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="TextAlignment" Value="Right"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="Padding" Value="8,0"/>
+                                                            </Style>
+                                                        </DataGridTextColumn.ElementStyle>
+                                                    </DataGridTextColumn>
+                                                    <DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="80" MinWidth="60">
+                                                        <DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="TextAlignment" Value="Center"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                                            </Style>
+                                                        </DataGridTextColumn.ElementStyle>
+                                                    </DataGridTextColumn>
+                                                    <DataGridTextColumn Header="السعر" Binding="{Binding UnitPrice, StringFormat={}{0:N0} د.ع}" Width="120" MinWidth="100">
+                                                        <DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="TextAlignment" Value="Right"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="Padding" Value="8,0"/>
+                                                            </Style>
+                                                        </DataGridTextColumn.ElementStyle>
+                                                    </DataGridTextColumn>
+                                                    <DataGridTextColumn Header="الخصم" Binding="{Binding DiscountAmount, StringFormat={}{0:N0} د.ع}" Width="100" MinWidth="80">
+                                                        <DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="TextAlignment" Value="Right"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="Padding" Value="8,0"/>
+                                                                <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                                            </Style>
+                                                        </DataGridTextColumn.ElementStyle>
+                                                    </DataGridTextColumn>
+                                                    <DataGridTextColumn Header="المجموع" Binding="{Binding Total, StringFormat={}{0:N0} د.ع}" Width="120" MinWidth="100">
+                                                        <DataGridTextColumn.ElementStyle>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="TextAlignment" Value="Right"/>
+                                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                                <Setter Property="Padding" Value="8,0"/>
+                                                                <Setter Property="FontWeight" Value="Bold"/>
+                                                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                            </Style>
+                                                        </DataGridTextColumn.ElementStyle>
+                                                    </DataGridTextColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                    
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="" Width="40">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="▶" FontSize="10" Foreground="{StaticResource TextLightBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                                                        <Setter Property="Text" Value="▼"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <DataGridTextColumn Header="رقم الفاتورة" Binding="{Binding InvoiceNumber}" Width="130" IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="النوع" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Left"
+                                            Background="{Binding Type, Converter={StaticResource InvoiceTypeToBackgroundConverter}}">
+                                        <TextBlock Text="{Binding Type, Converter={StaticResource InvoiceTypeToTextConverter}}"
+                                                   FontSize="11" Foreground="{Binding Type, Converter={StaticResource InvoiceTypeToForegroundConverter}}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="العميل/المورد" Binding="{Binding Customer.FullName}" Width="*" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="الإجمالي" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center" FontWeight="SemiBold">
+                                        <Run Text="{Binding Total, StringFormat=N0}"/>
+                                        <Run Text=" د.ع" Foreground="{StaticResource TextLightBrush}"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="حالة الدفع" Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Left"
+                                            Background="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToBackgroundConverter}}">
+                                        <TextBlock Text="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToTextConverter}}"
+                                                   FontSize="11" Foreground="{Binding PaymentStatus, Converter={StaticResource PaymentStatusToForegroundConverter}}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="التاريخ" Binding="{Binding InvoiceDate, StringFormat=yyyy/MM/dd}" Width="100" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="إجراءات" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Button Style="{StaticResource IconButton}" Content="✏️" ToolTip="تعديل"
+                                                Click="EditButton_Click" Width="35" Height="35"/>
+                                        <Button Style="{StaticResource IconButton}" Content="🗑️" ToolTip="حذف"
+                                                Click="DeleteButton_Click" Width="35" Height="35"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Visibility="{Binding Invoices.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=inverse}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="🧾" FontSize="64" HorizontalAlignment="Center" Opacity="0.3"/>
+                    <TextBlock Text="لا يوجد فواتير" FontSize="18" Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <Button Style="{StaticResource PrimaryButton}" Content="إضافة فاتورة جديدة" Margin="0,20,0,0"
+                            Command="{Binding AddInvoiceCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Pagination -->
+        <controls:PaginationControl Grid.Row="3"
+                                    CurrentPage="{Binding CurrentPage, Mode=TwoWay}"
+                                    TotalPages="{Binding TotalPages}"
+                                    TotalRecords="{Binding TotalRecords}"
+                                    PageSize="{Binding PageSize, Mode=TwoWay}"
+                                    PageChangedCommand="{Binding PageChangedCommand}"/>
+    </Grid>
+</UserControl>

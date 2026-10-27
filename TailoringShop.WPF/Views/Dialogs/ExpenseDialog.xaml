@@ -1,0 +1,183 @@
+<Window x:Class="TailoringShop.WPF.Views.Dialogs.ExpenseDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="مصروف"
+        Height="500" Width="500"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False">
+    
+    <Border CornerRadius="16" Background="White">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="5" Direction="270" Color="#000000" Opacity="0.15"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource DangerBrush}"
+                    CornerRadius="16,16,0,0"
+                    Padding="24,20">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock x:Name="TitleText"
+                                   Text="إضافة مصروف جديد"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="سجّل مصروفات المحل"
+                                   FontSize="13"
+                                   Foreground="White"
+                                   Opacity="0.8"
+                                   Margin="0,5,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                        <Button x:Name="MaximizeButton"
+                                Style="{StaticResource IconButton}"
+                                Content="🗖"
+                                FontSize="14"
+                                Foreground="White"
+                                Margin="0,0,5,0"
+                                Click="MaximizeButton_Click"/>
+                        <Button Style="{StaticResource IconButton}"
+                                Content="✕"
+                                FontSize="16"
+                                Foreground="White"
+                                Click="CloseButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Form Content -->
+            <ScrollViewer Grid.Row="1" 
+                          VerticalScrollBarVisibility="Auto"
+                          Padding="24,20">
+                <StackPanel>
+                    <!-- Category -->
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock Text="الفئة *"
+                                   Style="{StaticResource FormLabel}"/>
+                        <ComboBox x:Name="CategoryComboBox"
+                                  DisplayMemberPath="Name"
+                                  Padding="12,10"
+                                  FontSize="14"/>
+                        <TextBlock x:Name="CategoryError"
+                                   Text="يرجى اختيار الفئة"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   FontSize="11"
+                                   Visibility="Collapsed"
+                                   Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <!-- Amount -->
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock Text="المبلغ *"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="AmountTextBox"
+                                 Style="{StaticResource ModernTextBox}"
+                                 FontSize="16"
+                                 FontWeight="SemiBold"/>
+                        <TextBlock x:Name="AmountError"
+                                   Text="يرجى إدخال المبلغ"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   FontSize="11"
+                                   Visibility="Collapsed"
+                                   Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <!-- Description -->
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock Text="الوصف *"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="DescriptionTextBox"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Height="80"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"/>
+                        <TextBlock x:Name="DescriptionError"
+                                   Text="يرجى إدخال الوصف"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   FontSize="11"
+                                   Visibility="Collapsed"
+                                   Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <!-- Date and Cashbox -->
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Date -->
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="التاريخ"
+                                       Style="{StaticResource FormLabel}"/>
+                            <DatePicker x:Name="ExpenseDatePicker"
+                                        Padding="10,8"
+                                        FontSize="14"/>
+                        </StackPanel>
+
+                        <!-- Cashbox -->
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="الصندوق"
+                                       Style="{StaticResource FormLabel}"/>
+                            <ComboBox x:Name="CashboxComboBox"
+                                      DisplayMemberPath="Name"
+                                      Padding="10,8"
+                                      FontSize="14"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Reference Number -->
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock Text="رقم المرجع (اختياري)"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="ReferenceTextBox"
+                                 Style="{StaticResource ModernTextBox}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer Buttons -->
+            <Border Grid.Row="2" 
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    Padding="24,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="1"
+                            Style="{StaticResource OutlineButton}"
+                            Content="إلغاء"
+                            Padding="25,10"
+                            Margin="0,0,10,0"
+                            Click="CancelButton_Click"/>
+
+                    <Button Grid.Column="2"
+                            Style="{StaticResource DangerButton}"
+                            Content="💾 حفظ"
+                            Padding="30,10"
+                            Click="SaveButton_Click"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

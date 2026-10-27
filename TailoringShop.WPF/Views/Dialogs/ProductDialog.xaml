@@ -1,0 +1,235 @@
+<Window x:Class="TailoringShop.WPF.Views.Dialogs.ProductDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="منتج"
+        Height="600" Width="550"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False">
+    
+    <Border CornerRadius="16" Background="White">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="5" Direction="270" Color="#000000" Opacity="0.15"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource PrimaryGradientBrush}"
+                    CornerRadius="16,16,0,0"
+                    Padding="24,20">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock x:Name="TitleText"
+                                   Text="إضافة منتج جديد"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="أدخل بيانات المنتج"
+                                   FontSize="13"
+                                   Foreground="White"
+                                   Opacity="0.8"
+                                   Margin="0,5,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                        <Button x:Name="MaximizeButton"
+                                Style="{StaticResource IconButton}"
+                                Content="🗖"
+                                FontSize="14"
+                                Foreground="White"
+                                Margin="0,0,5,0"
+                                Click="MaximizeButton_Click"/>
+                        <Button Style="{StaticResource IconButton}"
+                                Content="✕"
+                                FontSize="16"
+                                Foreground="White"
+                                Click="CloseButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Form Content -->
+            <ScrollViewer Grid.Row="1" 
+                          VerticalScrollBarVisibility="Auto"
+                          Padding="24,20">
+                <StackPanel>
+                    <!-- Product Name -->
+                    <StackPanel Margin="0,0,0,16">
+                        <TextBlock Text="اسم المنتج *"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="NameTextBox"
+                                 Style="{StaticResource ModernTextBox}"
+                                 MaxLength="150"/>
+                        <TextBlock x:Name="NameError"
+                                   Text="اسم المنتج مطلوب"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   FontSize="12"
+                                   Margin="0,5,0,0"
+                                   Visibility="Collapsed"/>
+                    </StackPanel>
+
+                    <!-- SKU and Barcode Row -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- SKU -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="الرمز (SKU)"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox x:Name="SKUTextBox"
+                                     Style="{StaticResource ModernTextBox}"
+                                     MaxLength="50"/>
+                        </StackPanel>
+
+                        <!-- Barcode -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="الباركود"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox x:Name="BarcodeTextBox"
+                                     Style="{StaticResource ModernTextBox}"
+                                     MaxLength="50"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Category -->
+                    <StackPanel Margin="0,0,0,16">
+                        <TextBlock Text="التصنيف"
+                                   Style="{StaticResource FormLabel}"/>
+                        <ComboBox x:Name="CategoryComboBox"
+                                  Style="{StaticResource ModernComboBox}"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"/>
+                    </StackPanel>
+
+                    <!-- Prices Row -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Cost Price -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="سعر التكلفة"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox x:Name="CostPriceTextBox"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="0"/>
+                        </StackPanel>
+
+                        <!-- Selling Price -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="سعر البيع *"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox x:Name="SellingPriceTextBox"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="0"/>
+                            <TextBlock x:Name="SellingPriceError"
+                                       Text="سعر البيع مطلوب"
+                                       Foreground="{StaticResource DangerBrush}"
+                                       FontSize="12"
+                                       Margin="0,5,0,0"
+                                       Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Unit and Min Stock Row -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Unit -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="الوحدة"
+                                       Style="{StaticResource FormLabel}"/>
+                            <ComboBox x:Name="UnitComboBox"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="قطعة"/>
+                                <ComboBoxItem Content="متر"/>
+                                <ComboBoxItem Content="كيلو"/>
+                                <ComboBoxItem Content="لتر"/>
+                                <ComboBoxItem Content="علبة"/>
+                                <ComboBoxItem Content="كرتون"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Min Stock Level -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="الحد الأدنى للمخزون"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox x:Name="MinStockTextBox"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Is Active -->
+                    <StackPanel Margin="0,0,0,10">
+                        <CheckBox x:Name="IsActiveCheckBox"
+                                  Content="منتج نشط"
+                                  IsChecked="True"
+                                  FontSize="14"
+                                  Foreground="{StaticResource TextPrimaryBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer Buttons -->
+            <Border Grid.Row="2" 
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    Padding="24,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Required Fields Note -->
+                    <TextBlock Grid.Column="0"
+                               Text="* حقول مطلوبة"
+                               FontSize="12"
+                               Foreground="{StaticResource TextLightBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <!-- Cancel Button -->
+                    <Button Grid.Column="1"
+                            Style="{StaticResource OutlineButton}"
+                            Content="إلغاء"
+                            Padding="25,10"
+                            Margin="0,0,10,0"
+                            Click="CancelButton_Click"/>
+
+                    <!-- Save Button -->
+                    <Button Grid.Column="2"
+                            Style="{StaticResource PrimaryButton}"
+                            Content="💾 حفظ"
+                            Padding="25,10"
+                            Click="SaveButton_Click"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

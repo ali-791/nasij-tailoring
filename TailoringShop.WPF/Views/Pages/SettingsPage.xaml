@@ -1,0 +1,770 @@
+<UserControl x:Class="TailoringShop.WPF.Views.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="800" d:DesignWidth="1200">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,0,20">
+
+            <!-- ==================== Shop Settings ==================== -->
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,0,20" Padding="25">
+                <StackPanel>
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border Width="45" Height="45"
+                                CornerRadius="10"
+                                Background="{StaticResource PrimaryGradientBrush}">
+                            <TextBlock Text="🏪"
+                                       FontSize="22"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="معلومات المحل"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="تظهر هذه المعلومات في النظام والقائمة الجانبية"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Logo and Shop Name Row -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Logo Section -->
+                        <StackPanel Grid.Column="0" Margin="0,0,30,0" HorizontalAlignment="Center">
+                            <TextBlock Text="شعار المحل (Logo)"
+                                       Style="{StaticResource FormLabel}"
+                                       HorizontalAlignment="Center"/>
+                            <Border Width="100" Height="100" 
+                                    CornerRadius="50"
+                                    BorderBrush="#DDD" 
+                                    BorderThickness="2"
+                                    Background="#F5F5F5"
+                                    Margin="0,5,0,10">
+                                <Border.Clip>
+                                    <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
+                                </Border.Clip>
+                                <Image x:Name="ShopLogoPreview" 
+                                       Stretch="UniformToFill"/>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="📁 اختيار" 
+                                        Click="SelectShopLogo_Click"
+                                        Style="{StaticResource SecondaryButton}" 
+                                        Padding="15,6"
+                                        FontSize="11"
+                                        Margin="0,0,5,0"/>
+                                <Button Content="🗑️" 
+                                        Click="RemoveShopLogo_Click"
+                                        Style="{StaticResource SecondaryButton}" 
+                                        Padding="10,6"
+                                        FontSize="11"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <!-- Shop Info Fields -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <!-- Shop Name -->
+                            <TextBlock Text="اسم المحل *"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox Text="{Binding ShopName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                     Style="{StaticResource ModernTextBox}"
+                                     FontSize="14"/>
+                            <TextBlock Text="يظهر في القائمة الجانبية وعنوان النظام"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Save Button -->
+                    <Button Style="{StaticResource PrimaryButton}"
+                            Content="💾 حفظ معلومات المحل"
+                            HorizontalAlignment="Left"
+                            Padding="25,10"
+                            Command="{Binding SaveShopSettingsCommand}"
+                            Click="SaveShopSettings_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== Categories Section ==================== -->
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Product Categories -->
+                <Border Grid.Column="0" Style="{StaticResource DashboardCard}" Margin="0,0,10,0" Padding="25">
+                    <StackPanel>
+                        <!-- Header -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <Border Width="40" Height="40"
+                                    CornerRadius="8"
+                                    Background="#e3f2fd">
+                                <TextBlock Text="📦"
+                                           FontSize="18"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="فئات المنتجات"
+                                           FontSize="16"
+                                           FontWeight="Bold"/>
+                                <TextBlock FontSize="11"
+                                           Foreground="{StaticResource TextSecondaryBrush}">
+                                    <Run Text="{Binding ProductCategories.Count, Mode=OneWay}"/>
+                                    <Run Text=" فئة"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Add New -->
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding NewProductCategoryName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}"
+                                     FontSize="13"
+                                     Margin="0,0,10,0"/>
+                            
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Content="➕ إضافة"
+                                    Padding="15,8"
+                                    FontSize="12"
+                                    Command="{Binding AddProductCategoryCommand}"/>
+                        </Grid>
+
+                        <!-- List -->
+                        <ListBox ItemsSource="{Binding ProductCategories}"
+                                 SelectedItem="{Binding SelectedProductCategory}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 MaxHeight="200">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource BackgroundBrush}"
+                                            CornerRadius="8"
+                                            Padding="12,10"
+                                            Margin="0,0,0,5">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"/>
+                                            <Button Style="{StaticResource IconButton}"
+                                                    Content="🗑️"
+                                                    ToolTip="حذف"
+                                                    Width="28" Height="28"
+                                                    HorizontalAlignment="Right"
+                                                    Click="DeleteProductCategory_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+
+                <!-- Expense Categories -->
+                <Border Grid.Column="1" Style="{StaticResource DashboardCard}" Margin="10,0,0,0" Padding="25">
+                    <StackPanel>
+                        <!-- Header -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <Border Width="40" Height="40"
+                                    CornerRadius="8"
+                                    Background="#ffebee">
+                                <TextBlock Text="💸"
+                                           FontSize="18"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="فئات المصروفات"
+                                           FontSize="16"
+                                           FontWeight="Bold"/>
+                                <TextBlock FontSize="11"
+                                           Foreground="{StaticResource TextSecondaryBrush}">
+                                    <Run Text="{Binding ExpenseCategories.Count, Mode=OneWay}"/>
+                                    <Run Text=" فئة"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Add New -->
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding NewExpenseCategoryName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}"
+                                     FontSize="13"
+                                     Margin="0,0,10,0"/>
+                            
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource DangerButton}"
+                                    Content="➕ إضافة"
+                                    Padding="15,8"
+                                    FontSize="12"
+                                    Command="{Binding AddExpenseCategoryCommand}"/>
+                        </Grid>
+
+                        <!-- List -->
+                        <ListBox ItemsSource="{Binding ExpenseCategories}"
+                                 SelectedItem="{Binding SelectedExpenseCategory}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 MaxHeight="200">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource BackgroundBrush}"
+                                            CornerRadius="8"
+                                            Padding="12,10"
+                                            Margin="0,0,0,5">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"/>
+                                            <Button Style="{StaticResource IconButton}"
+                                                    Content="🗑️"
+                                                    ToolTip="حذف"
+                                                    Width="28" Height="28"
+                                                    HorizontalAlignment="Right"
+                                                    Click="DeleteExpenseCategory_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ==================== Stores Management ==================== -->
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,0,20" Padding="25">
+                <StackPanel>
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border Width="40" Height="40"
+                                CornerRadius="8"
+                                Background="#fff3e0">
+                            <TextBlock Text="🏬"
+                                       FontSize="18"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="المخازن"
+                                       FontSize="16"
+                                       FontWeight="Bold"/>
+                            <TextBlock FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}">
+                                <Run Text="{Binding Stores.Count, Mode=OneWay}"/>
+                                <Run Text=" مخزن"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Add New -->
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding NewStoreName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource ModernTextBox}"
+                                 FontSize="13"
+                                 Margin="0,0,10,0"/>
+                        
+                        <Button Grid.Column="1"
+                                Style="{StaticResource AccentButton}"
+                                Content="➕ إضافة مخزن"
+                                Padding="15,8"
+                                FontSize="12"
+                                Command="{Binding AddStoreCommand}"/>
+                    </Grid>
+
+                    <!-- Stores List -->
+                    <ItemsControl ItemsSource="{Binding Stores}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource BackgroundBrush}"
+                                        CornerRadius="8"
+                                        Padding="15,10"
+                                        Margin="0,0,10,10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🏬" FontSize="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Style="{StaticResource IconButton}"
+                                                Content="🗑️"
+                                                ToolTip="حذف"
+                                                Width="24" Height="24"
+                                                Margin="10,0,0,0"
+                                                Click="DeleteStore_Click"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== Change Password ==================== -->
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,0,20" Padding="25">
+                <StackPanel>
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border Width="40" Height="40"
+                                CornerRadius="8"
+                                Background="#fce4ec">
+                            <TextBlock Text="🔒"
+                                       FontSize="18"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="تغيير كلمة المرور"
+                                       FontSize="16"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="تغيير كلمة مرور الحساب الحالي"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Password Fields -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                            <TextBlock Text="كلمة المرور الحالية"
+                                       Style="{StaticResource FormLabel}"/>
+                            <PasswordBox x:Name="CurrentPasswordBox"
+                                         Padding="12,10"
+                                         FontSize="14"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="0,0,15,0">
+                            <TextBlock Text="كلمة المرور الجديدة"
+                                       Style="{StaticResource FormLabel}"/>
+                            <PasswordBox x:Name="NewPasswordBox"
+                                         Padding="12,10"
+                                         FontSize="14"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Margin="0,0,15,0">
+                            <TextBlock Text="تأكيد كلمة المرور"
+                                       Style="{StaticResource FormLabel}"/>
+                            <PasswordBox x:Name="ConfirmPasswordBox"
+                                         Padding="12,10"
+                                         FontSize="14"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="3"
+                                Style="{StaticResource DangerButton}"
+                                Content="🔐 تغيير"
+                                Padding="20,10"
+                                VerticalAlignment="Bottom"
+                                Click="ChangePassword_Click"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== Backup & Restore ==================== -->
+            <Border Style="{StaticResource DashboardCard}" Margin="0,0,0,20" Padding="25">
+                <StackPanel>
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border Width="45" Height="45"
+                                CornerRadius="10"
+                                Background="#e8f5e9">
+                            <TextBlock Text="💾"
+                                       FontSize="22"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="النسخ الاحتياطي والاستعادة"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="حفظ واستعادة جميع بيانات النظام"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Backup Stats -->
+                    <Border Background="{StaticResource BackgroundBrush}" 
+                            CornerRadius="10" 
+                            Padding="20" 
+                            Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <TextBlock Text="📦" FontSize="24" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="ProductsCountText" Text="0" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource PrimaryBrush}"/>
+                                <TextBlock Text="منتج" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="👥" FontSize="24" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="CustomersCountText" Text="0" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource PrimaryBrush}"/>
+                                <TextBlock Text="عميل" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="✂️" FontSize="24" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="OrdersCountText" Text="0" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+                                <TextBlock Text="طلب فصال" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                <TextBlock Text="🧾" FontSize="24" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="InvoicesCountText" Text="0" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource SuccessBrush}"/>
+                                <TextBlock Text="فاتورة" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                                <TextBlock Text="💸" FontSize="24" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="ExpensesCountText" Text="0" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource DangerBrush}"/>
+                                <TextBlock Text="مصروف" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Backup/Restore Buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Create Backup -->
+                        <Border Grid.Column="0" 
+                                Background="#e8f5e9" 
+                                CornerRadius="12" 
+                                Padding="25"
+                                Cursor="Hand"
+                                MouseLeftButtonUp="CreateBackup_Click">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="60" Height="60" 
+                                        CornerRadius="30" 
+                                        Background="#4caf50"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="💾" 
+                                               FontSize="28" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="إنشاء نسخة احتياطية" 
+                                           FontSize="16" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Center"
+                                           Margin="0,15,0,5"/>
+                                <TextBlock Text="حفظ جميع البيانات في ملف JSON" 
+                                           FontSize="12" 
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Restore Backup -->
+                        <Border Grid.Column="2" 
+                                Background="#fff3e0" 
+                                CornerRadius="12" 
+                                Padding="25"
+                                Cursor="Hand"
+                                MouseLeftButtonUp="RestoreBackup_Click">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="60" Height="60" 
+                                        CornerRadius="30" 
+                                        Background="#ff9800"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="📥" 
+                                               FontSize="28" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="استعادة نسخة احتياطية" 
+                                           FontSize="16" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Center"
+                                           Margin="0,15,0,5"/>
+                                <TextBlock Text="استيراد البيانات من ملف JSON" 
+                                           FontSize="12" 
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Warning -->
+                    <Border Background="#fff8e1" 
+                            CornerRadius="8" 
+                            Padding="15" 
+                            Margin="0,20,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚠️" FontSize="18" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="تنبيه: عند الاستعادة سيتم حذف جميع البيانات الحالية واستبدالها ببيانات النسخة الاحتياطية."
+                                       FontSize="12"
+                                       Foreground="#f57c00"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ==================== Auto Backup Section ==================== -->
+                    <Border Background="#e3f2fd" 
+                            CornerRadius="12" 
+                            Padding="20" 
+                            Margin="0,20,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- Header -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                                <Border Width="40" Height="40" CornerRadius="20" Background="#1976d2">
+                                    <TextBlock Text="⏰" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="النسخ الاحتياطي التلقائي" FontSize="16" FontWeight="Bold" Foreground="#1565c0"/>
+                                    <TextBlock Text="يتم إنشاء نسخة احتياطية تلقائياً كل يوم" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            
+                            <!-- Status -->
+                            <Grid Grid.Row="1" Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock Text="الحالة" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                                    <Border x:Name="AutoBackupStatusBorder" CornerRadius="12" Padding="12,6" Margin="0,5,0,0" HorizontalAlignment="Center">
+                                        <TextBlock x:Name="AutoBackupStatusText" FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock Text="آخر نسخة" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="LastBackupTimeText" Text="لم تتم بعد" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="#1565c0"/>
+                                </StackPanel>
+                                
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Text="النسخة القادمة" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="NextBackupTimeText" Text="--" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="#1565c0"/>
+                                </StackPanel>
+                            </Grid>
+                            
+                            <!-- Buttons -->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button x:Name="ToggleAutoBackupButton" 
+                                        Style="{StaticResource PrimaryButton}"
+                                        Content="⏸️ إيقاف مؤقت"
+                                        Padding="20,10"
+                                        Margin="0,0,10,0"
+                                        Click="ToggleAutoBackup_Click"/>
+                                <Button Style="{StaticResource SecondaryButton}"
+                                        Content="🔄 تنفيذ نسخة الآن"
+                                        Padding="20,10"
+                                        Click="RunAutoBackupNow_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== System Info ==================== -->
+            <Border Style="{StaticResource DashboardCard}" Padding="25">
+                <StackPanel>
+                    <!-- Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border Width="40" Height="40"
+                                CornerRadius="8"
+                                Background="#f3e5f5">
+                            <TextBlock Text="ℹ️"
+                                       FontSize="18"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="معلومات النظام"
+                                       FontSize="16"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="معلومات حول التطبيق"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Info -->
+                    <UniformGrid Rows="1" Columns="4">
+                        <StackPanel Margin="0,0,15,0">
+                            <TextBlock Text="اسم التطبيق"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Text="نظام إدارة محل الخياطة"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,15,0">
+                            <TextBlock Text="الإصدار"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Text="1.0.0"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,15,0">
+                            <TextBlock Text="التقنية"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Text="WPF - .NET 8"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="قاعدة البيانات"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Text="SQL Server"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </UniformGrid>
+                    
+                    <!-- License Status Section -->
+                    <Border x:Name="LicenseBorder"
+                            Background="#f0fdf4" 
+                            CornerRadius="10" 
+                            Padding="15" 
+                            Margin="0,20,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- License Icon -->
+                            <Border Grid.Column="0" 
+                                    Width="50" Height="50" 
+                                    CornerRadius="25" 
+                                    Background="#dcfce7"
+                                    VerticalAlignment="Center">
+                                <TextBlock x:Name="LicenseIcon"
+                                           Text="✅" 
+                                           FontSize="22"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            
+                            <!-- License Info -->
+                            <StackPanel Grid.Column="1" Margin="15,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="LicenseStatusText"
+                                           Text="الترخيص: جاري التحميل..."
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#166534"/>
+                                <TextBlock x:Name="LicenseDetailsText"
+                                           Text=""
+                                           FontSize="12"
+                                           Foreground="#22c55e"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
+                            
+                            <!-- Days Counter (for trial) -->
+                            <Border x:Name="DaysCounterBorder"
+                                    Grid.Column="2"
+                                    Background="#22c55e"
+                                    CornerRadius="8"
+                                    Padding="15,10"
+                                    VerticalAlignment="Center"
+                                    Visibility="Collapsed">
+                                <StackPanel>
+                                    <TextBlock x:Name="DaysCounterText"
+                                               Text="7"
+                                               FontSize="24"
+                                               FontWeight="Bold"
+                                               Foreground="White"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Text="يوم متبقي"
+                                               FontSize="10"
+                                               Foreground="White"
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

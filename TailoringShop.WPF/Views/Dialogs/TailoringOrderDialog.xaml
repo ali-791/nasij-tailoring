@@ -1,0 +1,316 @@
+<Window x:Class="TailoringShop.WPF.Views.Dialogs.TailoringOrderDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="طلب فصال"
+        Height="650" Width="800"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False">
+    
+    <Border CornerRadius="16" Background="White">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="5" Direction="270" Color="#000000" Opacity="0.15"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" 
+                    Background="{StaticResource PrimaryGradientBrush}"
+                    CornerRadius="16,16,0,0"
+                    Padding="24,20">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock x:Name="TitleText"
+                                   Text="طلب فصال جديد"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="أدخل بيانات الطلب"
+                                   FontSize="13"
+                                   Foreground="White"
+                                   Opacity="0.8"
+                                   Margin="0,5,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                        <Button Style="{StaticResource IconButton}"
+                                Content="🗖"
+                                FontSize="14"
+                                Foreground="White"
+                                Margin="0,0,5,0"
+                                Click="MaximizeButton_Click"/>
+                        <Button Style="{StaticResource IconButton}"
+                                Content="✕"
+                                FontSize="16"
+                                Foreground="White"
+                                Click="CloseButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Form Content -->
+            <ScrollViewer Grid.Row="1" 
+                          VerticalScrollBarVisibility="Auto"
+                          Padding="24,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Customer Name -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,20">
+                        <TextBlock Text="اسم العميل *"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="CustomerNameTextBox"
+                                 Style="{StaticResource ModernTextBox}"
+                                 FontSize="14"/>
+                        <TextBlock x:Name="CustomerNameError"
+                                   Text="يرجى إدخال اسم العميل"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   FontSize="12"
+                                   Margin="0,5,0,0"
+                                   Visibility="Collapsed"/>
+                    </StackPanel>
+
+                    <!-- Customer Phone -->
+                    <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,20">
+                        <TextBlock Text="رقم الهاتف"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="CustomerPhoneTextBox"
+                                 Style="{StaticResource ModernTextBox}"
+                                 FontSize="14"/>
+                    </StackPanel>
+
+                    <!-- Delivery Date - Move to new row -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,20">
+                        <TextBlock Text="موعد التسليم *"
+                                   Style="{StaticResource FormLabel}"/>
+                        <DatePicker x:Name="DeliveryDatePicker"
+                                    Padding="12,10"
+                                    FontSize="14"
+                                    SelectedDate="{x:Static sys:DateTime.Today}"
+                                    xmlns:sys="clr-namespace:System;assembly=mscorlib"/>
+                    </StackPanel>
+
+                    <!-- Items Section Header -->
+                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,10">
+                        <Grid>
+                            <TextBlock Text="بنود الطلب"
+                                       FontWeight="SemiBold"
+                                       FontSize="14"
+                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <Button Style="{StaticResource OutlineButton}"
+                                    Content="➕ إضافة بند"
+                                    Padding="12,6"
+                                    FontSize="12"
+                                    HorizontalAlignment="Right"
+                                    Click="AddItemButton_Click"/>
+                        </Grid>
+                        <Border Height="1" Background="{StaticResource BorderLightBrush}" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <!-- Items List -->
+                    <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" 
+                            Background="{StaticResource BackgroundBrush}"
+                            CornerRadius="8"
+                            Padding="10"
+                            MinHeight="150"
+                            Margin="0,0,0,20">
+                        <ListBox x:Name="ItemsListBox"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="White"
+                                            CornerRadius="8"
+                                            Padding="12"
+                                            Margin="0,0,0,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0" 
+                                                       Text="{Binding Description}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"/>
+                                            
+                                            <TextBlock Grid.Column="1" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="15,0">
+                                                <Run Text="الكمية:"/>
+                                                <Run Text="{Binding Quantity}" FontWeight="SemiBold"/>
+                                            </TextBlock>
+                                            
+                                            <TextBlock Grid.Column="2" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="15,0">
+                                                <Run Text="السعر:"/>
+                                                <Run Text="{Binding UnitPrice, StringFormat=N0}" FontWeight="SemiBold"/>
+                                            </TextBlock>
+                                            
+                                            <TextBlock Grid.Column="3" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="15,0"
+                                                       Foreground="{StaticResource PrimaryBrush}"
+                                                       FontWeight="Bold">
+                                                <Run Text="{Binding Total, StringFormat=N0}"/>
+                                                <Run Text=" د.ع"/>
+                                            </TextBlock>
+                                            
+                                            <Button Grid.Column="4"
+                                                    Style="{StaticResource IconButton}"
+                                                    Content="🗑️"
+                                                    Width="30" Height="30"
+                                                    Click="RemoveItemButton_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+
+                    <!-- Totals and Payment -->
+                    <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Payment Section -->
+                        <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                            <TextBlock Text="العربون (المبلغ المدفوع)"
+                                       Style="{StaticResource FormLabel}"/>
+                            <TextBox x:Name="DepositTextBox"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="0"
+                                     TextChanged="DepositTextBox_TextChanged"/>
+                        </StackPanel>
+
+                        <!-- Totals -->
+                        <Border Grid.Column="1"
+                                Background="{StaticResource BackgroundBrush}"
+                                CornerRadius="8"
+                                Padding="15">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,8">
+                                    <TextBlock Text="المجموع:"
+                                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <TextBlock x:Name="TotalText"
+                                               Text="0 د.ع"
+                                               HorizontalAlignment="Right"
+                                               FontWeight="SemiBold"/>
+                                </Grid>
+                                <Grid Margin="0,0,0,8">
+                                    <TextBlock Text="العربون:"
+                                               Foreground="{StaticResource SuccessBrush}"/>
+                                    <TextBlock x:Name="DepositText"
+                                               Text="0 د.ع"
+                                               HorizontalAlignment="Right"
+                                               Foreground="{StaticResource SuccessBrush}"
+                                               FontWeight="SemiBold"/>
+                                </Grid>
+                                <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,5"/>
+                                <Grid Margin="0,5,0,0">
+                                    <TextBlock Text="المتبقي:"
+                                               FontWeight="Bold"
+                                               FontSize="15"
+                                               Foreground="{StaticResource DangerBrush}"/>
+                                    <TextBlock x:Name="RemainingText"
+                                               Text="0 د.ع"
+                                               HorizontalAlignment="Right"
+                                               FontWeight="Bold"
+                                               FontSize="15"
+                                               Foreground="{StaticResource DangerBrush}"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Notes -->
+                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3">
+                        <TextBlock Text="ملاحظات"
+                                   Style="{StaticResource FormLabel}"/>
+                        <TextBox x:Name="NotesTextBox"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Height="60"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"/>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <!-- Footer Buttons -->
+            <Border Grid.Row="2" 
+                    BorderThickness="0,1,0,0"
+                    BorderBrush="{StaticResource BorderLightBrush}"
+                    Padding="24,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Required Fields Note -->
+                    <TextBlock Grid.Column="0"
+                               Text="* حقول مطلوبة"
+                               FontSize="12"
+                               Foreground="{StaticResource TextLightBrush}"
+                               VerticalAlignment="Center"/>
+
+                    <!-- Cancel Button -->
+                    <Button Grid.Column="1"
+                            Style="{StaticResource OutlineButton}"
+                            Content="إلغاء"
+                            Padding="25,10"
+                            Margin="0,0,10,0"
+                            Click="CancelButton_Click"/>
+
+                    <!-- Save Button -->
+                    <Button Grid.Column="2"
+                            Style="{StaticResource PrimaryButton}"
+                            Content="💾 حفظ"
+                            Padding="25,10"
+                            Margin="0,0,10,0"
+                            Click="SaveButton_Click"/>
+                    
+                    <!-- Save and Print Button -->
+                    <Button Grid.Column="3"
+                            Style="{StaticResource SuccessButton}"
+                            Content="🖨️ حفظ وطباعة"
+                            Padding="25,10"
+                            Click="SaveAndPrintButton_Click"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>
